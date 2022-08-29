@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../base
+
+patchesStrategicMerge:
+  - deployments.yaml
+
+images:
+  - name: FW_BOOT_SAMPLES_IMAGE
+    newName: 213293927234.dkr.ecr.us-east-1.amazonaws.com/freshworks-boot-samples

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freshworks-boot-samples-api
+spec:
+  template:
+    spec:
+      containers:
+      - name: app
+        resources:
+          limits:
+            memory: 3072M
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freshworks-boot-samples-kafka-processor
+spec:
+  template:
+    spec:
+      containers:
+      - name: app
+        resources:
+          limits:
+            memory: 3072M
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freshworks-boot-samples-sqs-processor
+spec:
+  template:
+    spec:
+      containers:
+      - name: app
+        resources:
+          limits:
+            memory: 3072M

@@ -1,0 +1,190 @@
+swagger: "2.0"
+info:
+  title: Todo API
+  version: 1.0.0
+host: localhost:8080
+basePath: /api/v1
+tags:
+  - name: "todo"
+    description: "Todo items"
+schemes:
+  - http
+  - https
+paths:
+  /about:
+    get:
+      tags:
+        - about
+      operationId: About
+      summary: About. This is an unauthenticated endpoint as configured in CustomSecurityConfiguration.
+      produces:
+        - application/json
+      responses:
+        200:
+          $ref: '#/responses/About'
+  /todos:
+    get:
+      tags:
+        - todo
+      operationId: listTodos
+      summary: List Todo items
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/TodoList'
+    post:
+      tags:
+        - todo
+      operationId: addTodo
+      summary: Add a new Todo item
+      produces:
+        - application/json
+      parameters:
+        - name: todo
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TodoCreate'
+      responses:
+        '201':
+          $ref: '#/responses/Todo'
+        400:
+          $ref: '#/responses/Error'
+  /todos/{id}:
+    get:
+      tags:
+        - todo
+      operationId: getTodo
+      summary: Get a Todo item
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/Todo'
+    put:
+      tags:
+        - todo
+      operationId: updateTodo
+      summary: Update a Todo item
+      produces:
+        - application/json
+      parameters:
+        - name: todo
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TodoCreate'
+      responses:
+        '200':
+          $ref: '#/responses/Todo'
+        400:
+          $ref: '#/responses/Error'
+    delete:
+      tags:
+        - todo
+      operationId: deleteTodo
+      summary: Delete a Todo item
+      responses:
+        '204':
+          description: |-
+            Success
+definitions:
+  About:
+    type: object
+    required:
+      - "name"
+    properties:
+      name:
+        type: string
+        example: "Sample REST API"
+  Todo:
+    type: object
+    required:
+      - "title"
+    properties:
+      id:
+        type: integer
+        format: int64
+      title:
+        type: string
+        example: "Buy milk"
+      completed:
+        type: boolean
+        example: false
+#        created_at:
+#          type: string
+#          format: date-time
+#          readOnly: true
+#          description: Created time of Todo item
+#          example: '2020-20-20T20:20:20Z'
+#        updated_at:
+#          type: string
+#          format: date-time
+#          readOnly: true
+#          description: Last updated time of Todo item
+#          example: '2020-20-20T20:20:20Z'
+  TodoListResponse:
+    type: object
+    properties:
+      todos:
+        type: array
+        items:
+          $ref: '#/definitions/Todo'
+      meta:
+        $ref: '#/definitions/Meta'
+  TodoCreate:
+    type: object
+    required:
+      - title
+    properties:
+      title:
+        type: string
+        example: "Buy milk"
+      completed:
+        type: boolean
+        example: false
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      errors:
+        type: array
+        items:
+          type: object
+          properties:
+            field:
+              type: string
+            code:
+              type: string
+            description:
+              type: string
+  Meta:
+    properties:
+      total_items:
+        type: integer
+        format: int64
+        description: Total Items
+        example: 100
+responses:
+  About:
+    description: Success
+    schema:
+      $ref: '#/definitions/About'
+  TodoList:
+    description: |-
+      Success
+    schema:
+      $ref: '#/definitions/TodoListResponse'
+  Todo:
+    description: |-
+      Success
+    schema:
+      $ref: '#/definitions/Todo'
+  Error:
+    description: Invalid input
+    schema:
+      $ref: '#/definitions/Error'

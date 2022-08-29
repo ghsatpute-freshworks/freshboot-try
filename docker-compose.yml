@@ -1,0 +1,72 @@
+version: '3'
+services:
+  samples-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fw-boot/samples
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/todo
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    links:
+      - mysqldb
+    depends_on:
+      - mysqldb
+    networks:
+      - freshworks-boot
+    ports:
+      - "8081:8080"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - java -jar api-1.0.0-SNAPSHOT.jar
+  samples-kafka:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fw-boot/samples
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/todo
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    links:
+      - mysqldb
+    depends_on:
+      - mysqldb
+    networks:
+      - freshworks-boot
+    entrypoint:
+      - /bin/bash
+      - -c
+      - java -jar kafka-processor-1.0.0-SNAPSHOT.jar
+  samples-sqs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fw-boot/samples
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/todo
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    links:
+      - mysqldb
+    depends_on:
+      - mysqldb
+    networks:
+      - freshworks-boot
+    entrypoint:
+      - /bin/bash
+      - -c
+      - java -jar sqs-processor-1.0.0-SNAPSHOT.jar
+  mysqldb:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3308:3306"
+    networks:
+      - freshworks-boot
+networks:
+  freshworks-boot:
+    driver: bridge

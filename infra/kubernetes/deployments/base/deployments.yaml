@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: freshworks-boot-samples-api
+  name: freshworks-boot-samples-api
+  namespace: freshworks-boot-samples
+spec:
+  selector:
+    matchLabels:
+      app: freshworks-boot-samples-api
+  template:
+    metadata:
+      labels:
+        app: freshworks-boot-samples-api
+    spec:
+      containers:
+      - name: app
+        image: FW_BOOT_SAMPLES_IMAGE
+        imagePullPolicy: Always
+        command: ["sh", "-c", "java -jar api-*.jar"]
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096M
+          requests:
+            cpu: 100m
+            memory: 1024M
+        ports:
+          - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: freshworks-boot-samples-secrets
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: prod
+
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: freshworks-boot-samples-kafka-processor
+  name: freshworks-boot-samples-kafka-processor
+  namespace: freshworks-boot-samples
+spec:
+  selector:
+    matchLabels:
+      app: freshworks-boot-samples-kafka-processor
+  template:
+    metadata:
+      labels:
+        app: freshworks-boot-samples-kafka-processor
+    spec:
+      containers:
+      - name: app
+        image: FW_BOOT_SAMPLES_IMAGE
+        imagePullPolicy: Always
+        command: ["sh", "-c", "java -jar kafka-processor-*.jar"]
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096M
+          requests:
+            cpu: 100m
+            memory: 1024M
+        ports:
+          - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: freshworks-boot-samples-secrets
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: prod
+
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: freshworks-boot-samples-sqs-processor
+  name: freshworks-boot-samples-sqs-processor
+  namespace: freshworks-boot-samples
+spec:
+  selector:
+    matchLabels:
+      app: freshworks-boot-samples-sqs-processor
+  template:
+    metadata:
+      labels:
+        app: freshworks-boot-samples-sqs-processor
+    spec:
+      containers:
+      - name: app
+        image: FW_BOOT_SAMPLES_IMAGE
+        imagePullPolicy: Always
+        command: ["sh", "-c", "java -jar sqs-processor-*.jar"]
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4096M
+          requests:
+            cpu: 100m
+            memory: 1024M
+        ports:
+          - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: freshworks-boot-samples-secrets
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: prod
+
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
